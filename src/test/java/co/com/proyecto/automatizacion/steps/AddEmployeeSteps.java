@@ -60,7 +60,7 @@ public class AddEmployeeSteps {
             .waitUntilVisible()
             .type(employeeName);
         employeeListPage.inputEmployeeId
-            .withTimeoutOf(Duration.ofSeconds(5))
+            .withTimeoutOf(Duration.ofSeconds(15))
             .waitUntilVisible()
             .type(employeeId);
         employeeListPage.btnSearch

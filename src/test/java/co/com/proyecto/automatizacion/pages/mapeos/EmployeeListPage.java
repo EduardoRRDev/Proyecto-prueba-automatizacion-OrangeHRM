@@ -16,8 +16,8 @@ public class EmployeeListPage extends PageObject {
     @FindBy(xpath = "(//input[@placeholder=\"Type for hints...\"])[1]")
     public WebElementFacade inputEmployeeName;
 
-    // Employee Id - segundo input en formulario (sin --active para compatibilidad CI)
-    @FindBy(xpath = "(//form//input[contains(@class,'oxd-input') and not(@type='password')])[2]")
+    // Employee Id - input en la fila con label "Employee Id" (robusto local y CI)
+    @FindBy(xpath = "//div[contains(@class,'oxd-form-row') and contains(.,'Employee Id')]//input[contains(@class,'oxd-input')]")
     public WebElementFacade inputEmployeeId;
 
     // Botón Search - //button[@type="submit"]
