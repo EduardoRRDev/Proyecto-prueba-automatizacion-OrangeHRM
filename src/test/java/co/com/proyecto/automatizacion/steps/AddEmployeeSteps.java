@@ -1,8 +1,8 @@
 package co.com.proyecto.automatizacion.steps;
 
-import co.com.proyecto.automatizacion.pages.mapeos.AddEmployeePage;
-import co.com.proyecto.automatizacion.pages.mapeos.EmployeeListPage;
-import co.com.proyecto.automatizacion.pages.mapeos.MainPage;
+import co.com.proyecto.automatizacion.pages.pim.AddEmployeePage;
+import co.com.proyecto.automatizacion.pages.pim.EmployeeListPage;
+import co.com.proyecto.automatizacion.pages.common.MainPage;
 import net.serenitybdd.annotations.Step;
 import org.openqa.selenium.Keys;
 
@@ -28,7 +28,18 @@ public class AddEmployeeSteps {
                                          String employeeId, String username, String password) {
         fillEmployeeData(firstName, middleName, lastName, employeeId);
         fillCreateLoginDetails(username, password);
-        
+    }
+
+    /** Sobrecarga que recibe el modelo Employee (estrategia de datos). */
+    public void fillEmployeeFormComplete(co.com.proyecto.automatizacion.models.Employee employee) {
+        fillEmployeeFormComplete(
+            employee.getFirstName(),
+            employee.getMiddleName(),
+            employee.getLastName(),
+            employee.getEmployeeId(),
+            employee.getUsername(),
+            employee.getPassword()
+        );
     }
 
     @Step("guarda el empleado")

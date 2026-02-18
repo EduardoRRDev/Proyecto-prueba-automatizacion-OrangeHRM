@@ -5,6 +5,27 @@ Automatización de pruebas para **OrangeHRM Demo** con Serenity BDD, Cucumber y 
 **URL:** https://opensource-demo.orangehrmlive.com  
 **Credenciales:** Admin / admin123
 
+## Estructura del proyecto (patrón POM)
+
+```
+src/test/java/co/com/proyecto/automatizacion/
+├── config/          # Configuración (credenciales, propiedades)
+├── pages/           # Page Objects por módulo
+│   ├── login/       # LoginPage
+│   ├── pim/         # AddEmployeePage, EmployeeListPage
+│   └── common/      # MainPage (Dashboard)
+├── steps/           # Lógica de interacción reutilizable
+├── definitions/     # Step definitions (Cucumber)
+├── models/          # Modelos de datos (Employee)
+├── data/            # Estrategia de datos (EmployeeTestData)
+└── runners/         # Test runners
+```
+
+## Estrategia de datos
+
+Los datos de prueba se cargan desde **`src/test/resources/data/employees.properties`**.  
+Cambiar los valores sin modificar código y soportar entornos distintos.
+
 ## Requisitos
 
 - JDK 17

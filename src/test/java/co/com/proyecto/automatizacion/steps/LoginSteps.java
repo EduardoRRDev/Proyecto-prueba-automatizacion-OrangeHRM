@@ -1,7 +1,7 @@
 package co.com.proyecto.automatizacion.steps;
 
-import co.com.proyecto.automatizacion.pages.mapeos.LoginPage;
-import co.com.proyecto.automatizacion.pages.mapeos.MainPage;
+import co.com.proyecto.automatizacion.pages.login.LoginPage;
+import co.com.proyecto.automatizacion.pages.common.MainPage;
 import net.serenitybdd.annotations.Step;
 import org.junit.Assume;
 import org.slf4j.Logger;

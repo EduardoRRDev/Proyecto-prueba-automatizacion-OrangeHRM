@@ -1,5 +1,7 @@
 package co.com.proyecto.automatizacion.definitions;
 
+import co.com.proyecto.automatizacion.data.EmployeeTestData;
+import co.com.proyecto.automatizacion.models.Employee;
 import co.com.proyecto.automatizacion.steps.AddEmployeeSteps;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Entonces;
@@ -22,8 +24,8 @@ public class AddEmployeeDefinitions {
 
     @Y("diligencia los datos del formulario")
     public void diligenciarDatosFormulario() {
-        // Nombre, segundo nombre, apellido, employeeId, username, password
-        addEmployeeSteps.fillEmployeeFormComplete("Omar", "Eduardo", "Rincon", "123654", "Omar.rincon", "OmarRincon123!");
+        Employee employee = EmployeeTestData.getDefaultEmployee();
+        addEmployeeSteps.fillEmployeeFormComplete(employee);
     }
 
     @Y("guarda el empleado")
@@ -46,9 +48,25 @@ public class AddEmployeeDefinitions {
         addEmployeeSteps.searchEmployee(nombre, id);
     }
 
+    @Y("busca el empleado registrado")
+    public void buscarEmpleadoRegistrado() {
+        Employee employee = EmployeeTestData.getDefaultEmployee();
+        addEmployeeSteps.searchEmployee(employee.getFirstName(), employee.getEmployeeId());
+    }
+
     @Entonces("verifica que el empleado aparece en la tabla con id {string}, nombre {string} y apellido {string}")
     public void verificarEmpleadoEnTabla(String id, String nombre, String apellido) {
         addEmployeeSteps.verifyEmployeeInTable(id, nombre, apellido);
+    }
+
+    @Entonces("verifica que el empleado aparece en la tabla")
+    public void verificarEmpleadoEnTabla() {
+        Employee employee = EmployeeTestData.getDefaultEmployee();
+        addEmployeeSteps.verifyEmployeeInTable(
+            employee.getEmployeeId(),
+            employee.getFullFirstName(),
+            employee.getLastName()
+        );
     }
 
     @Y("elimina el empleado de la lista")
