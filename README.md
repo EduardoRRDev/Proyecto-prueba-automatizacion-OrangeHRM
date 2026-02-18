@@ -38,4 +38,19 @@ Tras ejecutar, el reporte está en `target/site/serenity-YYYYMMDD-HHmmss/index.h
 ## Configuración
 
 - **Credenciales:** `serenity.properties` o variables `ORANGEHRM_USERNAME`, `ORANGEHRM_PASSWORD`
-- **CI/CD:** GitHub Actions en `.github/workflows/test.yml`
+
+## CI/CD
+
+El proyecto usa **GitHub Actions** para ejecutar los tests automáticamente.
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Workflow** | `.github/workflows/test.yml` |
+| **Disparadores** | `push` y `pull_request` en ramas `main` y `master` |
+| **Entorno** | `ubuntu-latest`, JDK 17 (Temurin), Chrome |
+| **Tests** | Solo `AddEmployeeRunner` por defecto. Para ejecutar todos, editar el workflow y descomentar la línea correspondiente. |
+| **Modo** | Headless (`-Dheadless.mode=true`) |
+| **Reporte** | Se sube como artifact `serenity-report` (retención 7 días). Descargable desde la ejecución del workflow. |
+| **Timeout** | 15 minutos |
+
+Para ver los resultados: **Actions** → seleccionar el workflow → descargar el artifact del reporte Serenity.

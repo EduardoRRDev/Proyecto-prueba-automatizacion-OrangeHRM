@@ -49,13 +49,14 @@ public class AddEmployeeSteps {
 
     @Step("navega a la lista de empleados")
     public void navigateToEmployeeList() {
-        mainPage.linkPim.withTimeoutOf(Duration.ofSeconds(10)).waitUntilClickable().click();
+        employeeListPage.open();
+        pause(2000); // Esperar a que cargue el formulario de búsqueda (crítico en CI/headless)
     }
 
     @Step("busca el empleado por nombre {0} e id {1}")
     public void searchEmployee(String employeeName, String employeeId) {
         employeeListPage.inputEmployeeName
-            .withTimeoutOf(Duration.ofSeconds(10))
+            .withTimeoutOf(Duration.ofSeconds(20))
             .waitUntilVisible()
             .type(employeeName);
         employeeListPage.inputEmployeeId
