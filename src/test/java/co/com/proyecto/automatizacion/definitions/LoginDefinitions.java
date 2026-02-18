@@ -28,7 +28,6 @@ public class LoginDefinitions {
     @Dado("que el usuario navega a la página de inicio de sesión")
     public void navegarPaginaInicioSesion() {
         loginSteps.openLoginPage();      // Abre la página de login
-        loginSteps.clearFieldsLogin();    // Limpia campos de usuario y contraseña
     }
 
     @Cuando("ingresa las credenciales de acceso correctas")

@@ -94,20 +94,15 @@ public class LoginSteps {
 
     @Step("clear user and password fields")
     public void clearFieldsLogin() {
-        // Limpia el campo de usuario escribiendo una cadena vacía
-        loginPage.inputUsername.type("");
-        
-        // Limpia el campo de contraseña
-        loginPage.inputPassword.type("");
+        // Espera a que los campos estén visibles antes de limpiar
+        loginPage.inputUsername.withTimeoutOf(Duration.ofSeconds(15)).waitUntilVisible().type("");
+        loginPage.inputPassword.withTimeoutOf(Duration.ofSeconds(10)).waitUntilVisible().type("");
     }
 
     @Step("enter credentials")
     public void enterCredentials(String username, String password) {
-        // Escribe el usuario en el campo correspondiente
-        loginPage.inputUsername.type(username);
-        
-        // Escribe la contraseña en el campo correspondiente
-        loginPage.inputPassword.type(password);
+        loginPage.inputUsername.withTimeoutOf(Duration.ofSeconds(15)).waitUntilVisible().type(username);
+        loginPage.inputPassword.withTimeoutOf(Duration.ofSeconds(10)).waitUntilVisible().type(password);
         
         // Registra las credenciales en el log (formato estructurado)
         LOGGER.atInfo()

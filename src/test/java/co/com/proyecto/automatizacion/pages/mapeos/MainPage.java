@@ -19,4 +19,8 @@ public class MainPage extends PageObject {
     @FindBy(xpath = "//h6[contains(@class,'oxd-topbar-header-breadcrumb') or contains(text(),'Dashboard')]")
     public WebElementFacade txtTitleMainPage;
 
+    // Menú lateral - PIM y Add Employee (OrangeHRM OXD)
+    @FindBy(xpath = "//span[text()='PIM']/ancestor::a | //a[.//span[text()='PIM']]")
+    public WebElementFacade linkPim;
+
 }

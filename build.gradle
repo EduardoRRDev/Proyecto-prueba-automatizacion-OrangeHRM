@@ -68,12 +68,16 @@ test {
     systemProperties System.getProperties()
     systemProperty "serenity.outputDirectory", serenityDefault
     
-    // Limpiar el directorio de reportes antes de ejecutar los tests
+    // Limpiar el directorio de reportes antes de ejecutar los tests (tolerante si está en uso)
     doFirst {
         def reportDir = file("${projectDir}/target/site/serenity")
         if (reportDir.exists()) {
-            println "Limpiando directorio de reportes anterior: ${reportDir.absolutePath}"
-            reportDir.deleteDir()
+            try {
+                reportDir.deleteDir()
+                println "Limpiando directorio de reportes anterior: ${reportDir.absolutePath}"
+            } catch (Exception e) {
+                println "ADVERTENCIA: No se pudo limpiar reportes (directorio en uso). Los tests continuarán."
+            }
         }
     }
 }
@@ -251,3 +255,20 @@ tasks.named("aggregate").configure {
 }
 
 test.finalizedBy(aggregate)
+
+// Sobrescribir clearReports para tolerar directorio en uso (reporte abierto en navegador, etc.)
+tasks.named("clearReports").configure {
+    actions.clear()
+    doLast {
+        try {
+            def reportDir = file("${projectDir}/target/site/serenity")
+            if (reportDir.exists()) {
+                reportDir.deleteDir()
+                println "Directorio de reportes limpiado."
+            }
+        } catch (Exception e) {
+            println "ADVERTENCIA: No se pudo limpiar target/site/serenity (puede estar en uso). Continuando..."
+            println "  Cierre el reporte en el navegador o el explorador de archivos y ejecute 'clean' de nuevo si lo necesita."
+        }
+    }
+}

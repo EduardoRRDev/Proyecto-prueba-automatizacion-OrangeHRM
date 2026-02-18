@@ -9,6 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -21,11 +22,16 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v2
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Run tests
-        run: ./gradlew clean test --tests "co.com.proyecto.automatizacion.runners.LoginRunner" --no-daemon -Dheadless.mode=true
+        run: ./gradlew clean test --tests "co.com.proyecto.automatizacion.runners.AddEmployeeRunner" --no-daemon -Dheadless.mode=true
+        # Para ejecutar todos los tests:
+        # run: ./gradlew clean test --no-daemon -Dheadless.mode=true
 
       # SonarCloud - descomentar para habilitar análisis de código
       # Requiere: secret SONAR_TOKEN en GitHub (Settings > Secrets > Actions)

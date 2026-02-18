@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
  * 
  * @CucumberOptions configura cómo Cucumber ejecutará los escenarios:
  * - features: Ruta donde están los archivos .feature con los escenarios Gherkin
- * - glue: Paquetes donde Cucumber buscará las step definitions y hooks
+ * - glue: Paquetes donde Cucumber buscará las step definitions
  * - snippets: Formato de los snippets generados cuando falta una step definition
  * - tags: Filtra qué escenarios ejecutar (solo los marcados con @InicioSesionExitoso)
  * - plugin: Formato de salida en consola ("pretty" = formato legible)
@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 @RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
         features = "src/test/resources/features/login",
-        glue = {"co.com.proyecto.automatizacion.definitions", "co.com.proyecto.automatizacion.hooks"},
+        glue = {"co.com.proyecto.automatizacion.definitions"},
         snippets = CucumberOptions.SnippetType.CAMELCASE,
         tags = "@InicioSesionExitoso",
         plugin = {"pretty"}

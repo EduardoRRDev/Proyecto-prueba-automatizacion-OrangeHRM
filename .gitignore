@@ -1,5 +1,6 @@
 target/
 build
+.username-counter
 .gradle
 .idea
 *.iml
