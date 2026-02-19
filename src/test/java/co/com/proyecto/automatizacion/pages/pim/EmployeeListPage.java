@@ -12,7 +12,8 @@ import org.openqa.selenium.By;
 @DefaultUrl("https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList")
 public class EmployeeListPage extends PageObject {
 
-    @FindBy(xpath = "(//input[@placeholder=\"Type for hints...\"])[1]")
+    // Employee Name - input en fila "Employee Name" (robusto si filtro está colapsado/expandido)
+    @FindBy(xpath = "//div[contains(@class,'oxd-form-row') and contains(.,'Employee Name')]//input[contains(@placeholder,'Type for hints')] | (//input[@placeholder=\"Type for hints...\"])[1]")
     public WebElementFacade inputEmployeeName;
 
     @FindBy(xpath = "//div[contains(@class,'oxd-form-row') and contains(.,'Employee Id')]//input[contains(@class,'oxd-input')]")

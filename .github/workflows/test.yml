@@ -24,6 +24,8 @@ jobs:
 
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: 131
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

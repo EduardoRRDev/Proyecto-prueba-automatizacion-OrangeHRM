@@ -61,11 +61,27 @@ public class AddEmployeeSteps {
     @Step("navega a la lista de empleados")
     public void navigateToEmployeeList() {
         employeeListPage.open();
-        pause(2000); // Esperar a que cargue el formulario de búsqueda (crítico en CI/headless)
+        pause(3000); // Esperar a que cargue (crítico en CI/headless)
+        expandEmployeeListFilterIfCollapsed();
+    }
+
+    /** Expande el filtro "Employee Information" si está colapsado (común en CI/headless). */
+    private void expandEmployeeListFilterIfCollapsed() {
+        String expandScript = "var all = document.querySelectorAll('*'); " +
+            "for (var i = 0; i < all.length; i++) { " +
+            "  var t = (all[i].textContent || '').trim(); " +
+            "  if (t === 'Employee Information' && all[i].querySelector && !all[i].querySelector('input')) { " +
+            "    all[i].click(); return; " +
+            "  } " +
+            "}";
+        employeeListPage.evaluateJavascript(expandScript);
+        pause(1500);
     }
 
     @Step("busca el empleado por nombre {0} e id {1}")
     public void searchEmployee(String employeeName, String employeeId) {
+        employeeListPage.evaluateJavascript("window.scrollTo(0, 0);");
+        pause(500);
         employeeListPage.inputEmployeeName
             .withTimeoutOf(Duration.ofSeconds(20))
             .waitUntilVisible()
