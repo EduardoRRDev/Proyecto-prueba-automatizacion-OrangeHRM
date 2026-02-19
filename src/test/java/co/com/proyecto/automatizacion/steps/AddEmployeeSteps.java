@@ -60,9 +60,21 @@ public class AddEmployeeSteps {
 
     @Step("navega a la lista de empleados")
     public void navigateToEmployeeList() {
+        ensureWindowSizeForLayout(); // Crítico en CI/headless: evita que el menú oculte el contenido
         employeeListPage.open();
         pause(3000); // Esperar a que cargue (crítico en CI/headless)
         expandEmployeeListFilterIfCollapsed();
+    }
+
+    /** En headless, el viewport puede ser pequeño y el menú lateral oculta el contenido. Ajusta a 1920x1080. */
+    private void ensureWindowSizeForLayout() {
+        if (Boolean.getBoolean("headless.mode")) {
+            try {
+                addEmployeePage.getDriver().manage().window().setSize(new org.openqa.selenium.Dimension(1920, 1080));
+            } catch (Exception ignored) {
+                // Si falla (ej. driver no iniciado aún), continuar
+            }
+        }
     }
 
     /** Expande el filtro "Employee Information" si está colapsado (común en CI/headless). */
