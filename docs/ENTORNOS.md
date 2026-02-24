@@ -6,7 +6,7 @@ El proyecto puede ejecutarse contra distintos entornos cambiando la **base URL**
 
 ## Cómo elegir el entorno
 
-- **Por defecto:** se usa el entorno **dev**.
+- **Por defecto:** se usa el entorno **qa** (si no indicas `-Denv`).
 - **Cambiar entorno:** propiedad de sistema `-Denv=dev|qa|prod`.
 
 Ejemplos:
@@ -34,17 +34,17 @@ Archivos en **`src/test/resources/env/`**:
 
 | Archivo              | Uso        |
 |----------------------|------------|
-| `env/dev.properties`  | Entorno desarrollo (por defecto) |
-| `env/qa.properties`   | Entorno QA |
+| `env/dev.properties`  | Entorno desarrollo |
+| `env/qa.properties`   | Entorno QA **(por defecto)** |
 | `env/prod.properties` | Entorno producción |
 
-Cada archivo puede definir:
+Por el momento cada archivo solo define:
 
-| Propiedad            | Descripción                          | Ejemplo |
-|----------------------|--------------------------------------|--------|
-| `app.base.url`        | URL base de la aplicación (sin barra final) | `https://opensource-demo.orangehrmlive.com` |
-| `orangehrm.username`  | Usuario de login                     | `Admin` |
-| `orangehrm.password`  | Contraseña                           | `admin123` |
+| Propiedad     | Descripción                                    | Ejemplo |
+|---------------|------------------------------------------------|--------|
+| `app.base.url` | URL base de la aplicación (sin barra final)   | `https://opensource-demo.orangehrmlive.com` |
+
+Las credenciales se leen de `serenity.properties` o de variables de entorno / `-D` (ver Prioridad más abajo).
 
 ## Prioridad de configuración
 
@@ -60,7 +60,7 @@ Así puedes sobrescribir solo lo que necesites (por ejemplo en CI: `-Denv=qa` y 
 
 ## Cómo funciona en el código
 
-- **TestConfig** lee `-Denv` (por defecto `dev`), carga `env/{env}.properties` y expone `getBaseUrl()`, `getUsername()`, `getPassword()`.
+- **TestConfig** lee `-Denv` (por defecto `qa`), carga `env/{env}.properties` y expone `getBaseUrl()`, `getUsername()`, `getPassword()`.
 - **Paths** (en `config/Paths.java`) centraliza las rutas: `LOGIN`, `ADD_EMPLOYEE`, `VIEW_EMPLOYEE_LIST`. Así no se repiten strings en varios steps.
 - Los **Steps** que abren una página usan `page.openAt(TestConfig.getBaseUrl() + Paths.XXX)` para que la URL dependa del entorno.
 - Las **Pages** mantienen `@DefaultUrl` completo (fallback para el IDE). En Serenity, `open()` es `final`, por eso no se puede sobrescribir en una BasePage para aplicar la base URL; por ello se usa `openAt(base + path)` en los steps.
@@ -68,7 +68,7 @@ Así puedes sobrescribir solo lo que necesites (por ejemplo en CI: `-Denv=qa` y 
 
 ## Añadir un nuevo entorno
 
-1. Crear `src/test/resources/env/miambiente.properties` con `app.base.url`, `orangehrm.username`, `orangehrm.password`.
+1. Crear `src/test/resources/env/miambiente.properties` con `app.base.url`.
 2. Ejecutar con `-Denv=miambiente`.
 
 ## CI (GitHub Actions)

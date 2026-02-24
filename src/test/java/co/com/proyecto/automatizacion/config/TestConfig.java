@@ -13,7 +13,7 @@ import java.util.Properties;
 public final class TestConfig {
 
     private static final String ENV_PROP = "env";
-    private static final String DEFAULT_ENV = "dev";
+    private static final String DEFAULT_ENV = "qa";
 
     private static final Properties SERENITY_PROPS = loadFromResource("/serenity.properties");
     private static volatile Properties envProps;

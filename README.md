@@ -70,10 +70,16 @@ Tras ejecutar, el reporte está en `target/site/serenity-YYYYMMDD-HHmmss/index.h
 
 ## Entornos (dev / qa / prod)
 
-Puedes ejecutar contra distintos entornos con **`-Denv=dev|qa|prod`** (por defecto `dev`). La base URL y las credenciales se leen de `src/test/resources/env/{env}.properties`.
+Puedes ejecutar contra distintos entornos con **`-Denv=dev|qa|prod`** (por defecto **qa**). La base URL se lee de `src/test/resources/env/{env}.properties`.
 
 ```bash
-./gradlew test -Denv=qa
+./gradlew test
+```
+(usa QA por defecto)
+
+```bash
+./gradlew test -Denv=dev
+./gradlew test -Denv=prod
 ```
 
 Detalle: [**docs/ENTORNOS.md**](docs/ENTORNOS.md)
