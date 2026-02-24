@@ -17,14 +17,22 @@ src/test/java/co/com/proyecto/automatizacion/
 ├── steps/           # Lógica de interacción reutilizable
 ├── definitions/     # Step definitions (Cucumber)
 ├── models/          # Modelos de datos (Employee)
-├── data/            # Estrategia de datos (EmployeeTestData)
-└── runners/         # Test runners
+├── data/            # Carga de datos (EmployeeTestData, TestDataLoader)
+├── context/         # Datos en ejecución (ScenarioContext, RuntimeCounter)
+└── runners/        # Test runners
 ```
 
 ## Estrategia de datos
 
-Los datos de prueba se cargan desde **`src/test/resources/data/employees.properties`**.  
-Cambiar los valores sin modificar código y soportar entornos distintos.
+Los datos de prueba están en **`src/test/resources/testdata/`** (YAML):
+
+- **Bloques base:** `testdata/empleados.yml`, `testdata/login.yml`
+- **Casos por flujo:** `testdata/flows/add_employee.yml` (DEFAULT, ADD_EMPLOYEE, etc.)
+
+El código usa **EmployeeTestData** (getDefaultEmployee(), getEmployee(caseId)); la carga desde YAML la hace TestDataLoader. Para datos que se calculan o capturan en ejecución se usa **ScenarioContext** y **RuntimeCounter**.
+
+- Cómo funciona el flujo: [`src/test/resources/testdata/COMO_FUNCIONAN_LOS_DATOS.md`](src/test/resources/testdata/COMO_FUNCIONAN_LOS_DATOS.md)
+- Explicación TestDataLoader / EmployeeTestData / Definitions: [`docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md`](docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md)
 
 ## Requisitos
 
@@ -55,6 +63,9 @@ Tras ejecutar, el reporte está en `target/site/serenity-YYYYMMDD-HHmmss/index.h
 ## Documentación
 
 - **Historia de usuario (Add Employee):** [`docs/historia-usuario-agregar-empleado.md`](docs/historia-usuario-agregar-empleado.md) | [Word](docs/historia-usuario-agregar-empleado.docx)
+- **Datos (testdata / TestDataLoader / Definitions):** [`docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md`](docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md)
+- **Cómo agregar otra sección de la web:** [`docs/AGREGAR_NUEVA_SECCION.md`](docs/AGREGAR_NUEVA_SECCION.md)
+- **Mejoras y próximos pasos sugeridos:** [`docs/MEJORAS_Y_PROXIMOS_PASOS.md`](docs/MEJORAS_Y_PROXIMOS_PASOS.md)
 
 ## Configuración
 

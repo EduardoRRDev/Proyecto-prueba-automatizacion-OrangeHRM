@@ -1,0 +1,6 @@
+# Credenciales de login (mismos que serenity.properties: orangehrm.username / orangehrm.password)
+# El login actual usa TestConfig; este archivo centraliza los datos quemados del proyecto.
+login:
+  default:
+    username: "Admin"
+    password: "admin123"

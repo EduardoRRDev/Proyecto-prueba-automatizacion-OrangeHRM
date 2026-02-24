@@ -93,7 +93,7 @@ public class AddEmployeeSteps {
     @Step("busca el empleado por nombre {0} e id {1}")
     public void searchEmployee(String employeeName, String employeeId) {
         employeeListPage.evaluateJavascript("window.scrollTo(0, 0);");
-        pause(500);
+        pause(500   );
         employeeListPage.inputEmployeeName
             .withTimeoutOf(Duration.ofSeconds(20))
             .waitUntilVisible()

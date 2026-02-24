@@ -1,0 +1,9 @@
+# AddEmployee: mismos datos que data/employees.properties (datos quemados del proyecto)
+empleados:
+  EMP_BASE:
+    firstName: "Omar"
+    middleName: "Eduardo"
+    lastName: "Rincon"
+    employeeId: "123654"
+    username: "Omar.rincon"
+    password: "OmarRincon123!"

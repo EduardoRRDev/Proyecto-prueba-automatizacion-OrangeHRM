@@ -1,0 +1,19 @@
+# Datasets por caso: mismos datos que employees.properties (Omar, Eduardo, Rincon, 123654, Omar.rincon, OmarRincon123!)
+# Para variar por caso (ej. otro nombre), agregar empleado_override con los campos a pisar.
+# Con overrides se escribe en YAML por indentación (sin corchetes {}); {} solo cuando va vacío.
+# Ejemplo comentado: usar primer nombre "Eduardo" solo para el caso validar liquidación:
+#   ADD_EMPLOYEE_VALIDAR_LIQUIDACION:
+#     empleado_ref: "EMP_BASE"
+#     empleado_override:
+#       firstName: "Eduardo"
+#       middleName: ""
+datasets:
+  ADD_EMPLOYEE:
+    empleado_ref: "EMP_BASE"
+    empleado_override: {}
+  ADD_EMPLOYEE_VALIDAR_LIQUIDACION:
+    empleado_ref: "EMP_BASE"
+    empleado_override: {}
+  DEFAULT:
+    empleado_ref: "EMP_BASE"
+    empleado_override: {}

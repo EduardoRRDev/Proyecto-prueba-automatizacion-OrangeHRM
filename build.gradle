@@ -43,6 +43,9 @@ dependencies {
 
     // Logging (testImplementation: steps y pages usan Logger)
     testImplementation "ch.qos.logback:logback-classic:${logbackVersion}"
+
+    // YAML para datos de prueba (testdata)
+    testImplementation 'org.yaml:snakeyaml:2.2'
 }
 
 // SonarCloud - descomentar cuando el plugin org.sonarqube esté habilitado

@@ -28,6 +28,12 @@ public class AddEmployeeDefinitions {
         addEmployeeSteps.fillEmployeeFormComplete(employee);
     }
 
+    @Y("diligencia los datos del formulario con el caso {string}")
+    public void diligenciarDatosFormularioConCaso(String caseId) {
+        Employee employee = EmployeeTestData.getEmployee(caseId);
+        addEmployeeSteps.fillEmployeeFormComplete(employee);
+    }
+
     @Y("guarda el empleado")
     public void guardarEmpleado() {
         addEmployeeSteps.saveEmployee();
@@ -51,7 +57,13 @@ public class AddEmployeeDefinitions {
     @Y("busca el empleado registrado")
     public void buscarEmpleadoRegistrado() {
         Employee employee = EmployeeTestData.getDefaultEmployee();
-        addEmployeeSteps.searchEmployee(employee.getFirstName(), employee.getEmployeeId());
+        addEmployeeSteps.searchEmployee(employee.getFullFirstName(), employee.getEmployeeId());
+    }
+
+    @Y("busca el empleado registrado del caso {string}")
+    public void buscarEmpleadoRegistradoDelCaso(String caseId) {
+        Employee employee = EmployeeTestData.getEmployee(caseId);
+        addEmployeeSteps.searchEmployee(employee.getFullFirstName(), employee.getEmployeeId());
     }
 
     @Entonces("verifica que el empleado aparece en la tabla con id {string}, nombre {string} y apellido {string}")
@@ -62,6 +74,16 @@ public class AddEmployeeDefinitions {
     @Entonces("verifica que el empleado aparece en la tabla")
     public void verificarEmpleadoEnTabla() {
         Employee employee = EmployeeTestData.getDefaultEmployee();
+        addEmployeeSteps.verifyEmployeeInTable(
+            employee.getEmployeeId(),
+            employee.getFullFirstName(),
+            employee.getLastName()
+        );
+    }
+
+    @Entonces("verifica que el empleado del caso {string} aparece en la tabla")
+    public void verificarEmpleadoEnTablaDelCaso(String caseId) {
+        Employee employee = EmployeeTestData.getEmployee(caseId);
         addEmployeeSteps.verifyEmployeeInTable(
             employee.getEmployeeId(),
             employee.getFullFirstName(),

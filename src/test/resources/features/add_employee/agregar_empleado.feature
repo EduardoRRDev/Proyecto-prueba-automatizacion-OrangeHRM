@@ -4,7 +4,7 @@ Característica: Agregar empleado
   Yo como administrador de RRHH necesito agregar nuevos empleados
   en el sistema a través del módulo PIM.
 
-  # Los datos del empleado se cargan desde src/test/resources/data/employees.properties
+  # Datos del empleado: src/test/resources/testdata/ (empleados.yml + flows/add_employee.yml)
   @AgregarEmpleado
   Escenario: Agregar empleado con datos básicos
     Dado que el usuario navega a la página de inicio de sesión
