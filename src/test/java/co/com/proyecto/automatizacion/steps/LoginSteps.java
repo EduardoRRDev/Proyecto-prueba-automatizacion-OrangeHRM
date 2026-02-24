@@ -1,5 +1,7 @@
 package co.com.proyecto.automatizacion.steps;
 
+import co.com.proyecto.automatizacion.config.TestConfig;
+import co.com.proyecto.automatizacion.config.Paths;
 import co.com.proyecto.automatizacion.pages.login.LoginPage;
 import co.com.proyecto.automatizacion.pages.common.MainPage;
 import net.serenitybdd.annotations.Step;
@@ -57,8 +59,7 @@ public class LoginSteps {
     @Step("user open login page")
     public void openLoginPage() {
         try {
-            // Abre la URL configurada en LoginPage (@DefaultUrl)
-            loginPage.open();
+            loginPage.openAt(TestConfig.getBaseUrl() + Paths.LOGIN);
             LOGGER.info("user open login page");
         } catch (Throwable t) {
             // Si el error es porque Chrome no está disponible, omite el escenario

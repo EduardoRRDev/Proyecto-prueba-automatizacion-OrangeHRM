@@ -1,5 +1,7 @@
 package co.com.proyecto.automatizacion.steps;
 
+import co.com.proyecto.automatizacion.config.TestConfig;
+import co.com.proyecto.automatizacion.config.Paths;
 import co.com.proyecto.automatizacion.pages.pim.AddEmployeePage;
 import co.com.proyecto.automatizacion.pages.pim.EmployeeListPage;
 import co.com.proyecto.automatizacion.pages.common.MainPage;
@@ -20,7 +22,7 @@ public class AddEmployeeSteps {
 
     @Step("navega a la página Add Employee")
     public void navigateToAddEmployee() {
-        addEmployeePage.open();
+        addEmployeePage.openAt(TestConfig.getBaseUrl() + Paths.ADD_EMPLOYEE);
     }
 
     @Step("diligencia todos los campos del formulario incluyendo login")
@@ -61,7 +63,7 @@ public class AddEmployeeSteps {
     @Step("navega a la lista de empleados")
     public void navigateToEmployeeList() {
         ensureWindowSizeForLayout(); // Crítico en CI/headless: evita que el menú oculte el contenido
-        employeeListPage.open();
+        employeeListPage.openAt(TestConfig.getBaseUrl() + Paths.VIEW_EMPLOYEE_LIST);
         pause(3000); // Esperar a que cargue (crítico en CI/headless)
         expandEmployeeListFilterIfCollapsed();
     }

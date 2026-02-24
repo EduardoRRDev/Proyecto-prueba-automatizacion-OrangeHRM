@@ -11,14 +11,10 @@ El proyecto ya tiene: POM, SOLID, datos en YAML (testdata), reportes Serenity, C
 
 ---
 
-## 2. Múltiples entornos (dev / qa / prod)
+## 2. Múltiples entornos (dev / qa / prod) ✅ Implementado
 
 - **Qué:** Poder cambiar URL base y credenciales por entorno sin tocar código.
-- **Cómo:**
-  - En `serenity.properties` o en archivos por entorno (`serenity.dev.properties`, etc.) definir `webdriver.base.url` y credenciales.
-  - En las Pages usar rutas relativas en `@DefaultUrl` (ej. `/web/index.php/auth/login`) para que Serenity concatene con la base.
-  - En CI o local: elegir perfil (ej. `-Denv=qa`) y que el build cargue el properties correspondiente.
-- **Prioridad:** Alta si vas a tener más de un ambiente.
+- **Implementación:** Archivos `src/test/resources/env/dev.properties`, `env/qa.properties`, `env/prod.properties` con `app.base.url` y credenciales. `TestConfig` lee `-Denv=dev|qa|prod` y fija `webdriver.base.url`; las Pages usan rutas relativas. Ver [**docs/ENTORNOS.md**](ENTORNOS.md).
 
 ---
 

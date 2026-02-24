@@ -65,11 +65,23 @@ Tras ejecutar, el reporte está en `target/site/serenity-YYYYMMDD-HHmmss/index.h
 - **Historia de usuario (Add Employee):** [`docs/historia-usuario-agregar-empleado.md`](docs/historia-usuario-agregar-empleado.md) | [Word](docs/historia-usuario-agregar-empleado.docx)
 - **Datos (testdata / TestDataLoader / Definitions):** [`docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md`](docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md)
 - **Cómo agregar otra sección de la web:** [`docs/AGREGAR_NUEVA_SECCION.md`](docs/AGREGAR_NUEVA_SECCION.md)
+- **Múltiples entornos (dev/qa/prod):** [`docs/ENTORNOS.md`](docs/ENTORNOS.md)
 - **Mejoras y próximos pasos sugeridos:** [`docs/MEJORAS_Y_PROXIMOS_PASOS.md`](docs/MEJORAS_Y_PROXIMOS_PASOS.md)
+
+## Entornos (dev / qa / prod)
+
+Puedes ejecutar contra distintos entornos con **`-Denv=dev|qa|prod`** (por defecto `dev`). La base URL y las credenciales se leen de `src/test/resources/env/{env}.properties`.
+
+```bash
+./gradlew test -Denv=qa
+```
+
+Detalle: [**docs/ENTORNOS.md**](docs/ENTORNOS.md)
 
 ## Configuración
 
-- **Credenciales:** `serenity.properties` o variables `ORANGEHRM_USERNAME`, `ORANGEHRM_PASSWORD`
+- **Entorno:** `-Denv=dev|qa|prod` y archivos en `src/test/resources/env/`.
+- **Credenciales:** env file, `serenity.properties` o variables `ORANGEHRM_USERNAME`, `ORANGEHRM_PASSWORD`
 
 ## CI/CD
 
