@@ -70,7 +70,11 @@ test {
     testLogging.showStandardStreams = true
     systemProperties System.getProperties()
     systemProperty "serenity.outputDirectory", serenityDefault
-    
+
+    // RerunFailedRunner solo se ejecuta explícitamente (--tests "...RerunFailedRunner").
+    // Excluirlo del build normal evita el error NoSuchFileException cuando rerun-*.txt no existen.
+    exclude "**/RerunFailedRunner.class"
+
     // Limpiar el directorio de reportes antes de ejecutar los tests (tolerante si está en uso)
     doFirst {
         def reportDir = file("${projectDir}/target/site/serenity")
