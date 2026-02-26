@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
         glue = {"co.com.proyecto.automatizacion.definitions"},
         snippets = CucumberOptions.SnippetType.CAMELCASE,
         tags = "@InicioSesionExitoso",
-        plugin = {"pretty"}
+        plugin = {"pretty", "rerun:target/rerun-login.txt"}
 )
 public class LoginRunner {
 }

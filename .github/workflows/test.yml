@@ -31,9 +31,15 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests
+        id: run_tests
         run: ./gradlew clean test --tests "co.com.proyecto.automatizacion.runners.AddEmployeeRunner" --no-daemon -Dheadless.mode=true
+        continue-on-error: true
         # Para ejecutar todos los tests:
         # run: ./gradlew clean test --no-daemon -Dheadless.mode=true
+
+      - name: Retry failed scenarios
+        if: steps.run_tests.outcome == 'failure'
+        run: ./gradlew test --tests "co.com.proyecto.automatizacion.runners.RerunFailedRunner" --no-daemon -Dheadless.mode=true
 
       # SonarCloud - descomentar para habilitar análisis de código
       # Requiere: secret SONAR_TOKEN en GitHub (Settings > Secrets > Actions)

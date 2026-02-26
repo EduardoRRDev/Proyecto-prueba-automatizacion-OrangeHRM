@@ -27,10 +27,10 @@ El proyecto ya tiene: POM, SOLID, datos en YAML (testdata), reportes Serenity, C
 
 ---
 
-## 4. Reintentos en fallos (retry)
+## 4. Reintentos en fallos (retry) ✅ Implementado
 
-- **Qué:** Reintentar 1–2 veces un escenario que falle por inestabilidad (red, tiempo de carga).
-- **Cómo:** Serenity/Cucumber permiten configurar retries (p. ej. con `serenity.restart.browser.for.each` y un runner con retry, o un plugin de Cucumber para retry). No abusar: solo para fallos intermitentes.
+- **Qué:** Reintentar los escenarios que fallen por inestabilidad (red, tiempo de carga) sin volver a correr toda la suite.
+- **Implementación:** Plugin `rerun` de Cucumber en cada runner genera `target/rerun-*.txt` con los escenarios fallidos. `RerunFailedRunner` los vuelve a ejecutar. En CI el paso de retry se activa automáticamente solo si el paso principal falla. Ver [**docs/RETRY.md**](RETRY.md).
 - **Prioridad:** Media (útil en CI).
 
 ---
@@ -90,7 +90,7 @@ El proyecto ya tiene: POM, SOLID, datos en YAML (testdata), reportes Serenity, C
 | README actualizado (testdata)  | Alta       | Bajo     |
 | Múltiples entornos             | Alta*      | Medio    |
 | Tags (smoke/regression)        | Media-alta | Bajo     |
-| Retry en fallos                | Media      | Bajo     |
+| Retry en fallos                | Media*     | Bajo     |
 | Datos únicos por ejecución     | Media      | Bajo     |
 | Paralelismo                   | Media      | Medio    |
 | Limpieza en @After si falla    | Media      | Medio    |

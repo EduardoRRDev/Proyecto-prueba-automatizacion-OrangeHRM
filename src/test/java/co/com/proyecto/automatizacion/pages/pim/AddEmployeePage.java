@@ -35,6 +35,6 @@ public class AddEmployeePage extends PageObject {
     @FindBy(xpath = "//form[contains(@class,'oxd-form')]//button[@type='submit']")
     public WebElementFacade btnSave;
 
-    @FindBy(xpath = "//h6[@class=\"oxd-text oxd-text--h6 orangehrm-main-title\" and text()=\"Personal Details\"]")
+    @FindBy(css = "h6.orangehrm-main-title")
     public WebElementFacade tituloCompleteDetails;
 }

@@ -10,8 +10,18 @@ import java.util.Map;
  * Carga datos desde testdata/ (YAML): base + override por caseId.
  * Usado por EmployeeTestData; el resto del proyecto debe usar EmployeeTestData, no esta clase.
  * testdata/empleados.yml = bloques base; testdata/flows/add_employee.yml = datasets por caso.
+ *
+ * username y employeeId reciben un sufijo único por ejecución (últimos 5 dígitos del timestamp)
+ * para evitar colisiones cuando el dato ya existe en el sistema bajo prueba.
  */
 public final class TestDataLoader {
+
+    /**
+     * Sufijo único para esta ejecución: últimos 4 dígitos del timestamp en ms.
+     * Se aplica a username y employeeId para evitar colisiones en ejecuciones consecutivas.
+     * OrangeHRM limita employeeId a 10 caracteres; el base "123654" tiene 6, queda espacio para 4.
+     */
+    private static final String RUN_SUFFIX = String.valueOf(System.currentTimeMillis() % 10000);
 
     private static final String EMPLEADOS = "testdata/empleados.yml";
     private static final String FLOWS_ADD = "testdata/flows/add_employee.yml";
@@ -58,8 +68,9 @@ public final class TestDataLoader {
                     case "firstName" -> b.firstName(v);
                     case "middleName" -> b.middleName(v);
                     case "lastName" -> b.lastName(v);
-                    case "employeeId" -> b.employeeId(v);
-                    case "username" -> b.username(v);
+                    // Sufijo único para evitar colisiones "Employee Id already exists" / "Username already exists"
+                    case "employeeId" -> b.employeeId(v + RUN_SUFFIX);
+                    case "username" -> b.username(v + RUN_SUFFIX);
                     case "password" -> b.password(v);
                 }
             }

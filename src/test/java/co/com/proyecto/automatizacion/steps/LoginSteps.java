@@ -115,11 +115,14 @@ public class LoginSteps {
 
     @Step("access the system")
     public void accessSystem(){
-        // Espera hasta 15 segundos a que el botón sea clickeable, luego hace clic
         loginPage.btnLogin
             .withTimeoutOf(Duration.ofSeconds(15))
             .waitUntilClickable()
             .click();
+        // Esperar a que el dashboard cargue antes de continuar con la navegación siguiente
+        mainPage.txtTitleMainPage
+            .withTimeoutOf(Duration.ofSeconds(20))
+            .waitUntilVisible();
     }
 
     @Step("validate successful login")

@@ -6,9 +6,9 @@ import java.util.Properties;
 
 /**
  * Configuración de pruebas por entorno (dev / qa / prod).
- * Entorno: -Denv=dev|qa|prod (por defecto dev). Propiedades en src/test/resources/env/{env}.properties.
- * Base URL: Serenity usa webdriver.base.url; se fija en ensureBaseUrlSet() (llamar desde Hooks @Before).
- * Credenciales: env file → variables de entorno → -D → serenity.properties → default.
+ * Entorno: -Denv=dev|qa|prod (por defecto qa). Propiedades en src/test/resources/env/{env}.properties.
+ * Base URL: se lee de env/{env}.properties (app.base.url). Usada en steps con Paths.
+ * Credenciales: variables de entorno → -D → serenity.properties → valor por defecto.
  */
 public final class TestConfig {
 
@@ -22,23 +22,28 @@ public final class TestConfig {
     private TestConfig() {
     }
 
-    /** Entorno actual (dev, qa, prod). */
+    /** Entorno activo: valor de -Denv (por defecto "qa"). */
     public static String getEnv() {
         return firstNonNull(System.getProperty(ENV_PROP), DEFAULT_ENV);
     }
 
-    /** Base URL del entorno (sin barra final). Fija webdriver.base.url para Serenity si aún no está fijada. */
+    /**
+     * Base URL del entorno activo (sin barra final).
+     * Prioridad: -Dwebdriver.base.url → env/{env}.properties → hardcoded.
+     */
     public static String getBaseUrl() {
         ensureEnvLoaded();
         return firstNonNull(
                 System.getProperty("webdriver.base.url"),
-                System.getProperty("app.base.url"),
                 envProps.getProperty("app.base.url"),
                 "https://opensource-demo.orangehrmlive.com"
         );
     }
 
-    /** Llamar antes del primer page.open() (p. ej. en Hooks @Before). Fija webdriver.base.url una sola vez. */
+    /**
+     * Fija webdriver.base.url en el sistema una sola vez.
+     * Llamado desde Hooks @Before para que esté disponible antes del primer page.open().
+     */
     public static void ensureBaseUrlSet() {
         if (baseUrlSet) return;
         String base = getBaseUrl();
@@ -48,23 +53,27 @@ public final class TestConfig {
         }
     }
 
+    /**
+     * Usuario de login.
+     * Prioridad: ORANGEHRM_USERNAME (env SO) → -Dorangehrm.username → serenity.properties → "Admin".
+     */
     public static String getUsername() {
-        ensureEnvLoaded();
         return firstNonNull(
                 System.getenv("ORANGEHRM_USERNAME"),
                 System.getProperty("orangehrm.username"),
-                envProps.getProperty("orangehrm.username"),
                 SERENITY_PROPS.getProperty("orangehrm.username"),
                 "Admin"
         );
     }
 
+    /**
+     * Contraseña de login.
+     * Prioridad: ORANGEHRM_PASSWORD (env SO) → -Dorangehrm.password → serenity.properties → "admin123".
+     */
     public static String getPassword() {
-        ensureEnvLoaded();
         return firstNonNull(
                 System.getenv("ORANGEHRM_PASSWORD"),
                 System.getProperty("orangehrm.password"),
-                envProps.getProperty("orangehrm.password"),
                 SERENITY_PROPS.getProperty("orangehrm.password"),
                 "admin123"
         );
@@ -74,11 +83,8 @@ public final class TestConfig {
         if (envProps == null) {
             synchronized (TestConfig.class) {
                 if (envProps == null) {
-                    String env = getEnv();
-                    envProps = loadFromResource("/env/" + env + ".properties");
-                    if (envProps == null || envProps.isEmpty()) {
-                        envProps = new Properties();
-                    }
+                    envProps = loadFromResource("/env/" + getEnv() + ".properties");
+                    if (envProps.isEmpty()) envProps = new Properties();
                 }
             }
         }
@@ -89,7 +95,6 @@ public final class TestConfig {
         try (InputStream is = TestConfig.class.getResourceAsStream(path)) {
             if (is != null) p.load(is);
         } catch (IOException ignored) {
-            // usar valores por defecto
         }
         return p;
     }

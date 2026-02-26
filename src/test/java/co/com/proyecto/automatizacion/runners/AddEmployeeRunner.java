@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
         glue = {"co.com.proyecto.automatizacion.definitions"},
         snippets = CucumberOptions.SnippetType.CAMELCASE,
         tags = "@AgregarEmpleado",
-        plugin = {"pretty"}
+        plugin = {"pretty", "rerun:target/rerun-add-employee.txt"}
 )
 public class AddEmployeeRunner {
 }
