@@ -37,6 +37,10 @@ jobs:
         # Para ejecutar todos los tests:
         # run: ./gradlew clean test --no-daemon -Dheadless.mode=true
 
+      - name: Save first attempt report
+        if: steps.run_tests.outcome == 'failure'
+        run: cp -r target/site/serenity target/site/serenity-first-attempt
+
       - name: Retry failed scenarios
         if: steps.run_tests.outcome == 'failure'
         run: ./gradlew test --tests "co.com.proyecto.automatizacion.runners.RerunFailedRunner" --no-daemon -Dheadless.mode=true
@@ -48,10 +52,18 @@ jobs:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       #   run: ./gradlew sonar --no-daemon
 
-      - name: Upload Serenity report
+      - name: Upload Serenity report (final)
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: serenity-report
           path: target/site/serenity/
+          retention-days: 7
+
+      - name: Upload first attempt report (con fallos originales)
+        uses: actions/upload-artifact@v4
+        if: steps.run_tests.outcome == 'failure'
+        with:
+          name: serenity-report-first-attempt
+          path: target/site/serenity-first-attempt/
           retention-days: 7
