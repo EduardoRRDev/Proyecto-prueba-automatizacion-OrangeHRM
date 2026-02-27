@@ -1,0 +1,101 @@
+---
+description: Estándares de código para el proyecto de automatización Java (Serenity BDD + Cucumber + POM)
+globs: src/test/java/**/*.java
+alwaysApply: true
+---
+
+# Estándares del Proyecto de Automatización
+
+## Arquitectura en capas (POM)
+
+Cada capa tiene una responsabilidad única. No mezclar responsabilidades entre capas.
+
+```
+Feature (.feature)          → lenguaje Gherkin, sin lógica
+  └── Definitions (.java)   → conecta Gherkin con Steps (solo delega, sin lógica de UI)
+        └── Steps (.java)   → acciones de alto nivel reutilizables (@Step)
+              └── Pages (.java) → mapeo de elementos y acciones de bajo nivel sobre el DOM
+```
+
+## Principios SOLID aplicados
+
+### S — Una sola responsabilidad por clase
+- `AddEmployeeSteps` → solo crear empleado
+- `EmployeeListSteps` → solo buscar, verificar y eliminar en la lista
+- `LoginSteps` → solo flujo de login
+- Cada Page Object → solo una página del sistema
+
+### O — Abierto/Cerrado
+- Agregar nuevos flujos creando nuevas clases, no modificando las existentes
+- Usar sobrecarga de métodos en lugar de condicionales para variantes
+
+### D — Inversión de dependencias
+- Los Steps reciben modelos (`Employee`) en lugar de parámetros sueltos
+- Las Definitions no acceden al driver ni a elementos web directamente
+
+## Reglas por capa
+
+### Page Objects (`pages/`)
+```java
+// ✅ CORRECTO — solo mapeo y acciones de bajo nivel
+public WebElementFacade cellByText(String text) {
+    return find(By.xpath("//div[contains(@class,'oxd-table-cell')]//div[text()='" + text + "']"));
+}
+
+// ❌ INCORRECTO — lógica de negocio en el Page Object
+public void searchAndVerifyEmployee(String name) { ... }
+```
+
+### Steps (`steps/`)
+```java
+// ✅ CORRECTO — usa el Page Object, no el driver directamente
+@Step("busca el empleado con nombre '{0}'")
+public void searchEmployeeByName(String firstName) {
+    employeeListPage.inputEmployeeName.waitUntilVisible().type(firstName);
+    employeeListPage.selectAutocompleteOption(firstName);
+}
+
+// ❌ INCORRECTO — accede al driver desde un Step
+public void search(String name) {
+    driver.findElement(By.xpath("//input")).sendKeys(name);
+}
+```
+
+### Definitions (`definitions/`)
+```java
+// ✅ CORRECTO — solo delega al Step
+@Y("busca el empleado registrado")
+public void buscarEmpleadoRegistrado() {
+    Employee employee = EmployeeTestData.getDefaultEmployee();
+    employeeListSteps.searchEmployeeByName(employee.getFirstName());
+}
+
+// ❌ INCORRECTO — lógica de negocio en la Definition
+@Y("busca el empleado registrado")
+public void buscarEmpleadoRegistrado() {
+    employeeListPage.inputEmployeeName.type("Omar"); // acceso directo a la página
+}
+```
+
+## Waits y pausas
+
+- Preferir `waitUntilVisible()` / `waitUntilClickable()` con `withTimeoutOf()` sobre `Thread.sleep()`
+- Usar `pause()` solo cuando sea estrictamente necesario (ej. esperar animaciones o autocomplete)
+- No usar valores de timeout hardcodeados fuera de los Steps — si se repiten, extraer a constante
+
+## Datos de prueba
+
+- Los datos viven en `testdata/` (YAML), nunca hardcodeados en Steps o Definitions
+- Acceder a datos siempre a través de `EmployeeTestData` (fachada pública)
+- Datos calculados en ejecución → usar `ScenarioContext`
+
+## Comentarios
+
+- Solo comentar el **por qué**, nunca el **qué** (el código debe leerse solo)
+- No comentar lo obvio: `// hace clic en el botón` es ruido
+
+## Nombrado
+
+- Steps: verbos en infinitivo → `navigateToAddEmployee()`, `fillEmployeeForm()`
+- Pages: sustantivos descriptivos → `inputFirstName`, `btnSave`, `cellByText()`
+- Definitions: verbos en español que reflejen el Gherkin → `navegarAddEmployee()`

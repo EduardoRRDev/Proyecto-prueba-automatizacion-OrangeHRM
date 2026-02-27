@@ -9,16 +9,7 @@ import net.serenitybdd.annotations.Steps;
 
 /**
  * Step Definitions para los escenarios de inicio de sesión.
- * 
- * Las Step Definitions son el "pegamento" entre los escenarios escritos en Gherkin
- * (lenguaje natural) y el código Java que ejecuta las acciones.
- * 
- * Cada método anotado con @Dado, @Cuando o @Entonces corresponde a un paso
- * en los archivos .feature. Cucumber busca estos métodos cuando encuentra
- * un paso que coincide exactamente con el texto de la anotación.
- * 
- * @Steps: Serenity inyecta automáticamente una instancia de LoginSteps.
- *         Esto permite que Serenity rastree y reporte cada paso en los reportes.
+ * Conecta los pasos Gherkin con LoginSteps.
  */
 public class LoginDefinitions {
 
@@ -27,17 +18,17 @@ public class LoginDefinitions {
 
     @Dado("que el usuario navega a la página de inicio de sesión")
     public void navegarPaginaInicioSesion() {
-        loginSteps.openLoginPage();      // Abre la página de login
+        loginSteps.openLoginPage();
     }
 
     @Cuando("ingresa las credenciales de acceso correctas")
     public void ingresaLasCredencialesDeAccesoCorrectas() {
         loginSteps.enterCredentials(TestConfig.getUsername(), TestConfig.getPassword());
-        loginSteps.accessSystem();
+        loginSteps.clickLogin();
     }
 
     @Entonces("debería ver la página principal")
-    public void deberiaVerPaginaPrincipal(){
-        loginSteps.validateSuccessfulLogin();  // Valida que el login fue exitoso
+    public void deberiaVerPaginaPrincipal() {
+        loginSteps.validateSuccessfulLogin();
     }
 }

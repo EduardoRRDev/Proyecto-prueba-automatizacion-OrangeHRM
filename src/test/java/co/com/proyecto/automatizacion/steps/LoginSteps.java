@@ -1,9 +1,9 @@
 package co.com.proyecto.automatizacion.steps;
 
-import co.com.proyecto.automatizacion.config.TestConfig;
 import co.com.proyecto.automatizacion.config.Paths;
-import co.com.proyecto.automatizacion.pages.login.LoginPage;
+import co.com.proyecto.automatizacion.config.TestConfig;
 import co.com.proyecto.automatizacion.pages.common.MainPage;
+import co.com.proyecto.automatizacion.pages.login.LoginPage;
 import net.serenitybdd.annotations.Step;
 import org.junit.Assume;
 import org.slf4j.Logger;
@@ -16,127 +16,74 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 /**
- * Steps reutilizables para el flujo de inicio de sesión.
- * 
- * Los Steps son métodos marcados con @Step que contienen la lógica reutilizable
- * de interacción con la aplicación. Estos métodos pueden ser llamados desde
- * múltiples Step Definitions.
- * 
- * Ventajas de usar @Step:
- * - Serenity los registra automáticamente en los reportes
- * - Aparecen como pasos individuales con capturas de pantalla
- * - Son reutilizables entre diferentes Step Definitions
- * - Permiten composición de pasos más complejos
- * 
- * Serenity inyecta automáticamente las Page Objects (loginPage, mainPage, etc.)
- * cuando las declaras como campos privados.
+ * Steps para el flujo de inicio de sesión.
+ * Responsabilidad: navegar al login, ingresar credenciales y validar acceso.
  */
-
-/**
- * Page Object para la página de login.
- * Serenity crea automáticamente una instancia cuando se necesita.
- * Contiene los elementos web mapeados (inputUsername, inputPassword, btnLogin).
- */
-/**
- * Page Object para la página principal después del login.
- * Serenity crea automáticamente una instancia cuando se necesita.
- */
-/**
- * Clase de interacción para la página principal.
- * Contiene métodos de alto nivel para interactuar con la página principal.
- */
-/**
- * Clase de interacción para la página principal.
- * Contiene métodos de alto nivel para interactuar con la página principal.
- */
-
 public class LoginSteps {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginSteps.class);
+
     private LoginPage loginPage;
     private MainPage mainPage;
 
-    @Step("user open login page")
+    @Step("abre la página de login")
     public void openLoginPage() {
         try {
             loginPage.openAt(TestConfig.getBaseUrl() + Paths.LOGIN);
             LOGGER.info("user open login page");
         } catch (Throwable t) {
-            // Si el error es porque Chrome no está disponible, omite el escenario
-            if (isDriverUnavailable(t)) {
+            if (isChromeUnavailable(t)) {
                 Assume.assumeNoException("Chrome no disponible; omitiendo escenario.", t);
             }
-            // Si es otro error, lo relanza para que el test falle normalmente
             throw t;
         }
     }
 
-    private static boolean isDriverUnavailable(Throwable t) {
-        String msg = t.getMessage() != null ? t.getMessage() : "";
-        Throwable cause = t;
-        
-        // Revisa la cadena de causas (cause.getCause()) para encontrar el error real
-        while (cause != null) {
-            if (cause.getMessage() != null && (
-                cause.getMessage().contains("Chrome failed to start") ||
-                cause.getMessage().contains("Could not instantiate") ||
-                cause.getMessage().contains("SessionNotCreatedException")
-            )) {
-                return true;
-            }
-            cause = cause.getCause();
-        }
-        
-        // También revisa el mensaje principal
-        return msg.contains("Chrome failed to start") ||
-               msg.contains("Could not instantiate") ||
-               msg.contains("SessionNotCreated");
-    }
-
-    @Step("clear user and password fields")
-    public void clearFieldsLogin() {
-        // Espera a que los campos estén visibles antes de limpiar
-        loginPage.inputUsername.withTimeoutOf(Duration.ofSeconds(15)).waitUntilVisible().type("");
-        loginPage.inputPassword.withTimeoutOf(Duration.ofSeconds(10)).waitUntilVisible().type("");
-    }
-
-    @Step("enter credentials")
+    @Step("ingresa usuario '{0}' y contraseña")
     public void enterCredentials(String username, String password) {
-        loginPage.inputUsername.withTimeoutOf(Duration.ofSeconds(15)).waitUntilVisible().type(username);
-        loginPage.inputPassword.withTimeoutOf(Duration.ofSeconds(10)).waitUntilVisible().type(password);
-        
-        // Registra las credenciales en el log (formato estructurado)
-        LOGGER.atInfo()
-              .setMessage("enter credentials with username:{} and password:{}.")
-              .addArgument(username)
-              .addArgument(password)
-              .log();
+        loginPage.inputUsername
+            .withTimeoutOf(Duration.ofSeconds(15))
+            .waitUntilVisible()
+            .type(username);
+        loginPage.inputPassword
+            .withTimeoutOf(Duration.ofSeconds(10))
+            .waitUntilVisible()
+            .type(password);
+        LOGGER.info("enter credentials with username:{} and password:{}.", username, password);
     }
 
-    @Step("access the system")
-    public void accessSystem(){
+    @Step("hace clic en el botón Login")
+    public void clickLogin() {
         loginPage.btnLogin
             .withTimeoutOf(Duration.ofSeconds(15))
             .waitUntilClickable()
             .click();
-        // Esperar a que el dashboard cargue antes de continuar con la navegación siguiente
+        // Esperar a que el Dashboard cargue antes de continuar
         mainPage.txtTitleMainPage
             .withTimeoutOf(Duration.ofSeconds(20))
             .waitUntilVisible();
     }
 
-    @Step("validate successful login")
+    @Step("valida que el login fue exitoso")
     public void validateSuccessfulLogin() {
-        final String mensajeError = "Login was unsuccessful.";
-        
-        // Espera y obtiene el título de la página principal (Dashboard de OrangeHRM)
         String titulo = mainPage.txtTitleMainPage
             .withTimeoutOf(Duration.ofSeconds(10))
             .waitUntilVisible()
             .getText();
-        
-        // Valida que el título sea "Dashboard" (página principal de OrangeHRM)
-        assertThat(mensajeError, titulo, is(equalTo("Dashboard")));
+        assertThat("Login was unsuccessful.", titulo, is(equalTo("Dashboard")));
     }
 
+    private boolean isChromeUnavailable(Throwable t) {
+        Throwable cause = t;
+        while (cause != null) {
+            String msg = cause.getMessage() != null ? cause.getMessage() : "";
+            if (msg.contains("Chrome failed to start") ||
+                msg.contains("Could not instantiate") ||
+                msg.contains("SessionNotCreatedException")) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
+    }
 }
