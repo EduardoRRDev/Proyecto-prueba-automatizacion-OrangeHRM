@@ -6,6 +6,7 @@ import co.com.proyecto.automatizacion.models.Employee;
 import co.com.proyecto.automatizacion.pages.pim.AddEmployeePage;
 import net.serenitybdd.annotations.Step;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
@@ -44,13 +45,17 @@ public class AddEmployeeSteps {
     }
 
     /**
-     * Verifica que el guardado fue exitoso esperando que aparezca
-     * la sección "Personal Details" del perfil del empleado.
+     * Verifica que el guardado fue exitoso: espera a que OrangeHRM redirija
+     * a la página del perfil del empleado (viewPersonalDetails) y luego
+     * que el título "Personal Details" esté visible.
      */
     @Step("verifica que el empleado se guardó correctamente")
     public void verifyEmployeeSaved() {
+        WebDriverWait wait = new WebDriverWait(addEmployeePage.getDriver(), Duration.ofSeconds(25));
+        wait.until(driver -> driver.getCurrentUrl().contains("viewPersonalDetails"));
+
         addEmployeePage.tituloCompleteDetails
-            .withTimeoutOf(Duration.ofSeconds(20))
+            .withTimeoutOf(Duration.ofSeconds(15))
             .waitUntilVisible();
     }
 

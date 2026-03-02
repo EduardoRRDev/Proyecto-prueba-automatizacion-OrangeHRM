@@ -29,6 +29,22 @@ public class EmployeeListPage extends PageObject {
     public WebElementFacade btnConfirmDelete;
 
     /**
+     * Expande el panel "Employee Information" si está colapsado.
+     * En CI/headless el panel suele cargarse colapsado y los inputs no son visibles.
+     */
+    public void expandFilterIfCollapsed() {
+        evaluateJavascript(
+            "var all = document.querySelectorAll('*');" +
+            "for (var i = 0; i < all.length; i++) {" +
+            "  var t = (all[i].textContent || '').trim();" +
+            "  if (t === 'Employee Information' && all[i].querySelector && !all[i].querySelector('input')) {" +
+            "    all[i].click(); return;" +
+            "  }" +
+            "}"
+        );
+    }
+
+    /**
      * Selecciona la primera opción del autocomplete que contenga el texto buscado.
      * Retorna true si encontró y seleccionó una opción, false si no apareció el dropdown.
      */

@@ -19,8 +19,11 @@ public class EmployeeListSteps {
 
     @Step("navega a la lista de empleados")
     public void navigateToEmployeeList() {
+        ensureWindowSizeForHeadless();
         employeeListPage.openAt(TestConfig.getBaseUrl() + Paths.VIEW_EMPLOYEE_LIST);
         waitForPageLoad();
+        employeeListPage.expandFilterIfCollapsed();
+        pause(1500); // Dar tiempo a que el panel expandido renderice los inputs
     }
 
     /**
@@ -30,7 +33,7 @@ public class EmployeeListSteps {
     @Step("busca el empleado con nombre '{0}'")
     public void searchEmployeeByName(String firstName) {
         employeeListPage.inputEmployeeName
-            .withTimeoutOf(Duration.ofSeconds(15))
+            .withTimeoutOf(Duration.ofSeconds(20))
             .waitUntilVisible()
             .type(firstName);
 
@@ -72,6 +75,18 @@ public class EmployeeListSteps {
 
     private void waitForPageLoad() {
         pause(2500);
+    }
+
+    /** En headless (CI) el viewport pequeño puede dejar el panel de filtros colapsado; 1920x1080 evita eso. */
+    private void ensureWindowSizeForHeadless() {
+        if (Boolean.getBoolean("headless.mode")) {
+            try {
+                employeeListPage.getDriver().manage().window()
+                    .setSize(new org.openqa.selenium.Dimension(1920, 1080));
+            } catch (Exception ignored) {
+                // Si el driver aún no está listo, continuar
+            }
+        }
     }
 
     private void pause(int ms) {
