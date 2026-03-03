@@ -1,5 +1,6 @@
 package co.com.proyecto.automatizacion.data;
 
+import co.com.proyecto.automatizacion.context.ScenarioContext;
 import co.com.proyecto.automatizacion.models.Employee;
 import org.yaml.snakeyaml.Yaml;
 
@@ -11,17 +12,14 @@ import java.util.Map;
  * Usado por EmployeeTestData; el resto del proyecto debe usar EmployeeTestData, no esta clase.
  * testdata/empleados.yml = bloques base; testdata/flows/add_employee.yml = datasets por caso.
  *
- * username y employeeId reciben un sufijo único por ejecución (últimos 5 dígitos del timestamp)
- * para evitar colisiones cuando el dato ya existe en el sistema bajo prueba.
+ * username y employeeId reciben un sufijo único por escenario (UUID) para evitar colisiones
+ * cuando varios jobs o usuarios ejecutan tests a la vez sobre la misma base de datos.
+ * El sufijo se fija en Hooks y se reutiliza en todo el escenario vía ScenarioContext.
  */
 public final class TestDataLoader {
 
-    /**
-     * Sufijo único para esta ejecución: últimos 4 dígitos del timestamp en ms.
-     * Se aplica a username y employeeId para evitar colisiones en ejecuciones consecutivas.
-     * OrangeHRM limita employeeId a 10 caracteres; el base "123654" tiene 6, queda espacio para 4.
-     */
-    private static final String RUN_SUFFIX = String.valueOf(System.currentTimeMillis() % 10000);
+    /** Fallback cuando no hay ScenarioContext (ej. test unitario o ejecución sin Cucumber). */
+    private static final String FALLBACK_SUFFIX = String.valueOf(System.currentTimeMillis() % 10000);
 
     private static final String EMPLEADOS = "testdata/empleados.yml";
     private static final String FLOWS_ADD = "testdata/flows/add_employee.yml";
@@ -59,6 +57,13 @@ public final class TestDataLoader {
     }
 
     private static Employee mergeToEmployee(Map<String, Object> base, Map<String, Object> override) {
+        String suffixId = ScenarioContext.get("runSuffixShort");
+        if (suffixId == null) suffixId = FALLBACK_SUFFIX;
+        suffixId = suffixId.length() >= 4 ? suffixId.substring(0, 4) : suffixId;
+
+        String suffixUser = ScenarioContext.get("runSuffix");
+        if (suffixUser == null || suffixUser.isEmpty()) suffixUser = FALLBACK_SUFFIX;
+
         Employee.Builder b = Employee.builder();
         String[] keys = {"firstName", "middleName", "lastName", "employeeId", "username", "password"};
         for (String k : keys) {
@@ -68,9 +73,8 @@ public final class TestDataLoader {
                     case "firstName" -> b.firstName(v);
                     case "middleName" -> b.middleName(v);
                     case "lastName" -> b.lastName(v);
-                    // Sufijo único para evitar colisiones "Employee Id already exists" / "Username already exists"
-                    case "employeeId" -> b.employeeId(v + RUN_SUFFIX);
-                    case "username" -> b.username(v + RUN_SUFFIX);
+                    case "employeeId" -> b.employeeId(v + suffixId);   // 4 chars para respetar límite 10
+                    case "username" -> b.username(v + suffixUser);     // 8 chars, único por escenario/ejecución
                     case "password" -> b.password(v);
                 }
             }

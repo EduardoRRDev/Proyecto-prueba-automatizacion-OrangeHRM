@@ -7,6 +7,8 @@ Automatización de pruebas para **OrangeHRM Demo** con Serenity BDD, Cucumber y 
 
 ## Estructura del proyecto (patrón POM)
 
+**Código (Java):**
+
 ```
 src/test/java/co/com/proyecto/automatizacion/
 ├── config/          # Configuración (TestConfig, Paths)
@@ -17,24 +19,28 @@ src/test/java/co/com/proyecto/automatizacion/
 ├── steps/           # Lógica de interacción reutilizable
 ├── definitions/     # Step definitions (Cucumber) + Hooks
 ├── models/          # Modelos de datos (Employee)
-├── data/            # Carga de datos (EmployeeTestData, TestDataLoader)
+├── data/            # Carga de datos (EmployeeTestData, TestDataLoader) — lee desde testdata/
 ├── context/         # Datos en ejecución (ScenarioContext, RuntimeCounter)
 └── runners/         # Test runners (Login, AddEmployee, RerunFailed)
 ```
 
+**Datos de prueba (YAML):** en **`src/test/resources/testdata/`**. No se usa `data/employees.properties` ni carpeta `resources/data`; todo está en **testdata/**.
+
 ## Estrategia de datos
 
-Los datos de prueba están en **`src/test/resources/testdata/`** (YAML):
+Los datos de prueba están en **`src/test/resources/testdata/`** (YAML), no en properties ni en `data/`:
 
 - **Bloques base:** `testdata/empleados.yml`, `testdata/login.yml`
 - **Casos por flujo:** `testdata/flows/add_employee.yml` (DEFAULT, ADD_EMPLOYEE, etc.)
 
-El código usa **EmployeeTestData** (`getDefaultEmployee()`, `getEmployee(caseId)`); la carga desde YAML la hace `TestDataLoader`. Para datos que se calculan o capturan en ejecución se usa **ScenarioContext** y **RuntimeCounter**.
+El código usa **EmployeeTestData** (`getDefaultEmployee()`, `getEmployee(caseId)`); la carga desde YAML la hace **TestDataLoader**. Para datos que se calculan o capturan en ejecución se usa **ScenarioContext** y **RuntimeCounter**.
 
-`TestDataLoader` agrega un **sufijo único por ejecución** al `username` y `employeeId` para evitar colisiones cuando el dato ya existe en el sistema demo.
+`TestDataLoader` agrega un **sufijo único por escenario** (UUID) al `username` y `employeeId` para evitar colisiones cuando varios jobs o usuarios ejecutan tests a la vez sobre la misma base. El sufijo se fija en `Hooks` y se reutiliza en todo el escenario vía **ScenarioContext**. Detalle: [**Datos únicos por ejecución**](docs/DATOS_UNICOS_POR_EJECUCION.md).
 
-- Cómo funciona el flujo: [`docs/COMO_FUNCIONAN_LOS_DATOS.md`](docs/COMO_FUNCIONAN_LOS_DATOS.md)
-- Explicación TestDataLoader / EmployeeTestData / Definitions: [`docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md`](docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md)
+**Documentación:**
+
+- [**Cómo funcionan los datos**](docs/COMO_FUNCIONAN_LOS_DATOS.md) — flujo desde YAML hasta los steps
+- [**Datos, testdata y Employee**](docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md) — TestDataLoader, EmployeeTestData y su uso en Definitions
 
 ## Requisitos
 
@@ -113,6 +119,7 @@ Para ver los resultados: **Actions** → seleccionar el workflow → descargar e
 
 ## Documentación
 
+- **Datos únicos por ejecución (evitar colisiones):** [`docs/DATOS_UNICOS_POR_EJECUCION.md`](docs/DATOS_UNICOS_POR_EJECUCION.md)
 - **Datos (testdata / TestDataLoader / Definitions):** [`docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md`](docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md)
 - **Cómo funcionan los datos:** [`docs/COMO_FUNCIONAN_LOS_DATOS.md`](docs/COMO_FUNCIONAN_LOS_DATOS.md)
 - **Retry (reintentos en fallos):** [`docs/RETRY.md`](docs/RETRY.md)
