@@ -73,6 +73,10 @@ En CI el retry se activa automáticamente si el paso principal falla. Si todo pa
 
 Detalle: [**docs/RETRY.md**](docs/RETRY.md)
 
+## Ejecución en paralelo
+
+Para reducir tiempo cuando ejecutas **todos** los tests (varios runners), usa **`-Pparallel=N`** (ej. `-Pparallel=2`). Gradle lanzará N workers en paralelo; cada uno escribe en su propio directorio y luego se une un reporte. Por defecto no se usa paralelo (1 worker). Detalle: [**docs/EJECUCION_PARALELA.md**](docs/EJECUCION_PARALELA.md).
+
 ## Reporte
 
 Tras ejecutar, el reporte está en `target/site/serenity/index.html`  
@@ -123,6 +127,7 @@ Para ver los resultados: **Actions** → seleccionar el workflow → descargar e
 - **Datos (testdata / TestDataLoader / Definitions):** [`docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md`](docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md)
 - **Cómo funcionan los datos:** [`docs/COMO_FUNCIONAN_LOS_DATOS.md`](docs/COMO_FUNCIONAN_LOS_DATOS.md)
 - **Retry (reintentos en fallos):** [`docs/RETRY.md`](docs/RETRY.md)
+- **Ejecución en paralelo:** [`docs/EJECUCION_PARALELA.md`](docs/EJECUCION_PARALELA.md)
 - **Múltiples entornos (dev/qa/prod):** [`docs/ENTORNOS.md`](docs/ENTORNOS.md)
 - **Cómo agregar otra sección de la web:** [`docs/AGREGAR_NUEVA_SECCION.md`](docs/AGREGAR_NUEVA_SECCION.md)
 - **Historia de usuario (Add Employee):** [`docs/historia-usuario-agregar-empleado.md`](docs/historia-usuario-agregar-empleado.md)

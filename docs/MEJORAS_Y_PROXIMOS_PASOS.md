@@ -4,10 +4,10 @@ El proyecto ya tiene: POM, SOLID, datos en YAML (testdata), reportes Serenity, C
 
 ---
 
-## 1. Actualizar README (datos y estructura)
+## 1. Actualizar README (datos y estructura) ✅ Implementado
 
-- **Qué:** En el README sigue apareciendo `data/employees.properties`. Debería indicar que los datos están en **testdata/** (YAML) y enlazar a `testdata/COMO_FUNCIONAN_LOS_DATOS.md` y a `docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md`.
-- **Prioridad:** Alta (evita confusión).
+- **Qué:** En el README indicar que los datos están en **testdata/** (YAML) y enlazar a la documentación de datos.
+- **Implementación:** README actualizado: datos en `testdata/` (YAML), enlaces a `testdata/COMO_FUNCIONAN_LOS_DATOS.md` y a `docs/DATOS_TESTDATA_EMPLOYEE_EXPLICACION.md`. Ya no se referencia `data/employees.properties` para datos de pruebas.
 
 ---
 
@@ -35,19 +35,17 @@ El proyecto ya tiene: POM, SOLID, datos en YAML (testdata), reportes Serenity, C
 
 ---
 
-## 5. Datos únicos por ejecución (evitar colisiones)
+## 5. Datos únicos por ejecución (evitar colisiones) ✅ Implementado
 
 - **Qué:** Si varios jobs o usuarios corren tests a la vez, que username/employeeId no se pisen (ej. `Omar.rincon` ya existe).
-- **Cómo:** En testdata o en código, usar un sufijo único por ejecución: timestamp o `UUID.randomUUID().toString().substring(0,8)` en username/employeeId. Opcionalmente guardar ese valor en `ScenarioContext` para reutilizarlo en el mismo escenario.
-- **Prioridad:** Media si hay paralelismo o misma base de datos compartida.
+- **Implementación:** Sufijo único por escenario en Hooks (`runSuffix` / `runSuffixShort`). `TestDataLoader` aplica el sufijo a username y employeeId desde `ScenarioContext`; el mismo valor se reutiliza en todo el escenario. Ver [**docs/DATOS_UNICOS_POR_EJECUCION.md**](DATOS_UNICOS_POR_EJECUCION.md).
 
 ---
 
-## 6. Ejecución en paralelo
+## 6. Ejecución en paralelo ✅ Implementado
 
 - **Qué:** Repartir escenarios en varios workers para reducir tiempo total.
-- **Cómo:** Gradle (múltiples JVM con `maxParallelForks`) o Cucumber con paralelismo por tag/feature. Cuidado con datos compartidos y limpieza (ScenarioContext/ThreadLocal ya ayudan por hilo).
-- **Prioridad:** Media cuando la suite tarde mucho.
+- **Implementación:** `maxParallelForks` en Gradle con `-Pparallel=N`. Runners con directorio de salida Serenity por worker (`org.gradle.test.worker`); tarea `mergeSerenityWorkerOutputs` copia el primer worker a `target/site/serenity` para agregar el reporte. Ver [**docs/EJECUCION_PARALELA.md**](EJECUCION_PARALELA.md) y sección en README.
 
 ---
 
@@ -85,18 +83,18 @@ El proyecto ya tiene: POM, SOLID, datos en YAML (testdata), reportes Serenity, C
 
 ## Resumen rápido
 
-| Mejora                         | Prioridad   | Esfuerzo |
-|--------------------------------|------------|----------|
-| README actualizado (testdata)  | Alta       | Bajo     |
-| Múltiples entornos             | Alta*      | Medio    |
-| Tags (smoke/regression)        | Media-alta | Bajo     |
-| Retry en fallos                | Media*     | Bajo     |
-| Datos únicos por ejecución     | Media      | Bajo     |
-| Paralelismo                   | Media      | Medio    |
-| Limpieza en @After si falla    | Media      | Medio    |
-| API para setup/teardown        | Baja-media | Alto     |
-| SonarCloud                     | Baja       | Bajo     |
-| Docker                         | Baja       | Medio    |
+| Mejora                         | Estado      | Prioridad   | Esfuerzo |
+|--------------------------------|-------------|------------|----------|
+| README actualizado (testdata)  | ✅ Hecho    | Alta       | Bajo     |
+| Múltiples entornos             | ✅ Hecho    | Alta*      | Medio    |
+| Tags (smoke/regression)        | Pendiente   | Media-alta | Bajo     |
+| Retry en fallos                | ✅ Hecho    | Media*     | Bajo     |
+| Datos únicos por ejecución     | ✅ Hecho    | Media      | Bajo     |
+| Paralelismo                    | ✅ Hecho    | Media      | Medio    |
+| Limpieza en @After si falla    | Pendiente   | Media      | Medio    |
+| API para setup/teardown        | Pendiente   | Baja-media | Alto     |
+| SonarCloud                     | Pendiente   | Baja       | Bajo     |
+| Docker                         | Pendiente   | Baja       | Medio    |
 
 \* Alta si tienes o tendrás dev/qa/prod.
 

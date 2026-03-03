@@ -78,6 +78,26 @@ El paso de retry solo se activa si el paso principal tuvo fallos. Si todo pasó,
 
 ---
 
+## Cómo se ven los reintentos en el reporte
+
+**No hay un solo reporte que muestre “falló → se reintentó → pasó”.** Serenity genera un reporte por ejecución, y el retry es una **segunda ejecución** que **sobrescribe** el directorio de salida. Por eso:
+
+| Situación | Qué ves |
+|-----------|--------|
+| **Reporte final** (artifact `serenity-report`) | Siempre es el resultado de la **última** ejecución. Si hubo retry, ese reporte contiene **solo** los escenarios que se reintentaron y su resultado en el 2.º intento (pasaron o volvieron a fallar). No incluye el primer intento. |
+| **Reporte del primer intento** (artifact `serenity-report-first-attempt`) | Solo existe en CI cuando el primer paso falló. Contiene los **fallos originales** (los escenarios que fallaron en la primera ejecución). Se sube como artifact aparte para que puedas comparar. |
+
+**En resumen:**
+
+- **Primer intento con fallos** → se guarda una copia en `serenity-first-attempt` y se sube como `serenity-report-first-attempt`.
+- **Retry** → se ejecuta y escribe en `target/site/serenity`, que es lo que se sube como `serenity-report` (reporte final).
+
+Para ver “qué falló la primera vez” y “qué pasó en el reintento” hay que abrir **los dos** artifacts: el del primer intento y el final.
+
+**Local:** Si ejecutas primero AddEmployeeRunner y luego RerunFailedRunner, el reporte en `target/site/serenity/index.html` solo mostrará la ejecución del RerunFailedRunner (los escenarios reintentados). No se guarda automáticamente una copia del primer intento; puedes copiar `target/site/serenity` a otra carpeta antes de lanzar el retry si quieres conservar el reporte del primer intento.
+
+---
+
 ## Qué NO hace este mecanismo
 
 - **No oculta fallos reales.** Si el escenario falla dos veces seguidas, sigue apareciendo como fallido en el reporte.

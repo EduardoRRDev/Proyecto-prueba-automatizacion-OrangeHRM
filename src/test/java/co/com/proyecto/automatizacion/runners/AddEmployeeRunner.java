@@ -13,4 +13,14 @@ import org.junit.runner.RunWith;
         plugin = {"pretty", "rerun:target/rerun-add-employee.txt"}
 )
 public class AddEmployeeRunner {
+
+    static {
+        String worker = System.getProperty("org.gradle.test.worker");
+        if (worker != null && !worker.isEmpty()) {
+            String base = System.getProperty("serenity.outputDirectory");
+            if (base != null) {
+                System.setProperty("serenity.outputDirectory", base + "-" + worker.replaceAll("[^a-zA-Z0-9]", "_"));
+            }
+        }
+    }
 }

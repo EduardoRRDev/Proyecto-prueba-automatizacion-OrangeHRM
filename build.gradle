@@ -65,37 +65,42 @@ sonarqube {
 // 1) Usar directorio por defecto para que test y aggregate generen el reporte correctamente
 def serenityDefault = file("${projectDir}/target/site/serenity").absolutePath
 
+// Ejecución en paralelo: -Pparallel=N (ej. -Pparallel=2) para N workers. Por defecto 1 (sin paralelo).
+def maxForks = project.findProperty('parallel') ? project.property('parallel').toString().toInteger() : 1
+
 test {
     useJUnit()
     testLogging.showStandardStreams = true
+    maxParallelForks = maxForks
     systemProperties System.getProperties()
     systemProperty "serenity.outputDirectory", serenityDefault
 
-    // Limpiar el directorio de reportes antes de ejecutar los tests (tolerante si está en uso)
+    // Limpiar directorios de reportes antes de ejecutar (tolerante si están en uso)
     doFirst {
-        def reportDir = file("${projectDir}/target/site/serenity")
-        if (reportDir.exists()) {
-            try {
-                reportDir.deleteDir()
-                println "Limpiando directorio de reportes anterior: ${reportDir.absolutePath}"
-            } catch (Exception e) {
-                println "ADVERTENCIA: No se pudo limpiar reportes (directorio en uso). Los tests continuarán."
+        def siteDir = file("${projectDir}/target/site")
+        if (siteDir.exists()) {
+            ["serenity", "serenity-1", "serenity-2", "serenity-3", "serenity-4"].each { name ->
+                def d = file("${projectDir}/target/site/${name}")
+                if (d.exists()) {
+                    try {
+                        d.deleteDir()
+                        println "Limpiando: ${d.absolutePath}"
+                    } catch (Exception e) {
+                        println "ADVERTENCIA: No se pudo limpiar ${name}. Los tests continuarán."
+                    }
+                }
             }
         }
 
-        // Crear archivos rerun-*.txt vacíos si no existen.
-        // RerunFailedRunner los necesita para arrancar; si están vacíos no ejecuta ningún escenario.
-        def rerunFiles = [
-            "target/rerun-add-employee.txt",
-            "target/rerun-login.txt"
-        ]
-        rerunFiles.each { path ->
+        // Crear archivos rerun-*.txt vacíos si no existen (RerunFailedRunner los necesita)
+        ["target/rerun-add-employee.txt", "target/rerun-login.txt"].each { path ->
             def f = file("${projectDir}/${path}")
             if (!f.exists()) {
                 f.parentFile.mkdirs()
                 f.text = ""
             }
         }
+        if (maxForks > 1) println "Ejecución paralela: ${maxForks} workers"
     }
 }
 
@@ -271,7 +276,31 @@ tasks.named("aggregate").configure {
     }
 }
 
-test.finalizedBy(aggregate)
+// Con paralelo, cada worker escribe en target/site/serenity-1, serenity-2, etc. Merge copia el primero a serenity para aggregate.
+def mergeSerenityWorkerOutputs = tasks.register("mergeSerenityWorkerOutputs") {
+    doLast {
+        def siteDir = file("${projectDir}/target/site")
+        if (!siteDir.exists()) return
+        def workerDirs = siteDir.listFiles()?.findAll { it.isDirectory() && it.name.matches("serenity-\\d+") }?.sort() ?: []
+        if (workerDirs.isEmpty()) return
+        def targetDir = file("${projectDir}/target/site/serenity")
+        targetDir.mkdirs()
+        def first = workerDirs[0]
+        println "Mergeando reporte de worker: ${first.name} -> serenity"
+        first.eachFileRecurse { file ->
+            if (file.isFile()) {
+                def rel = first.toPath().relativize(file.toPath())
+                def dest = targetDir.toPath().resolve(rel).toFile()
+                dest.parentFile.mkdirs()
+                dest.bytes = file.bytes
+            }
+        }
+    }
+}
+mergeSerenityWorkerOutputs.get().mustRunAfter(test)
+aggregate.mustRunAfter(mergeSerenityWorkerOutputs.get())
+test.finalizedBy(mergeSerenityWorkerOutputs.get())
+mergeSerenityWorkerOutputs.get().finalizedBy(aggregate)
 
 // Sobrescribir clearReports para tolerar directorio en uso (reporte abierto en navegador, etc.)
 tasks.named("clearReports").configure {
