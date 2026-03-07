@@ -1,8 +1,12 @@
-# OrangeHRM - Automatización Serenity BDD
+# E2E Automation — Serenity BDD & Cucumber
 
-Automatización de pruebas para **OrangeHRM Demo** con Serenity BDD, Cucumber y POM.
+## Sobre el proyecto
 
-**URL:** https://opensource-demo.orangehrmlive.com  
+Framework de **automatización E2E** para una aplicación web de gestión (demo). Desarrollado con **Serenity BDD**, **Cucumber** y **Java 17** siguiendo el patrón **Page Object Model (POM)**.
+
+Incluye flujos de **login** y **alta de empleados** (formulario, lista, búsqueda y eliminación), datos de prueba en **YAML**, **reintentos** ante fallos, **ejecución paralela**, **múltiples entornos** (dev/qa/prod) y reportes **Serenity**. Los tests se ejecutan en **GitHub Actions** y el reporte se publica como artifact.
+
+**Aplicación bajo prueba (demo):** https://opensource-demo.orangehrmlive.com  
 **Credenciales:** Admin / admin123
 
 ## Estructura del proyecto (patrón POM)
@@ -132,3 +136,8 @@ Para ver los resultados: **Actions** → seleccionar el workflow → descargar e
 - **Cómo agregar otra sección de la web:** [`docs/AGREGAR_NUEVA_SECCION.md`](docs/AGREGAR_NUEVA_SECCION.md)
 - **Historia de usuario (Add Employee):** [`docs/historia-usuario-agregar-empleado.md`](docs/historia-usuario-agregar-empleado.md)
 - **Mejoras y próximos pasos sugeridos:** [`docs/MEJORAS_Y_PROXIMOS_PASOS.md`](docs/MEJORAS_Y_PROXIMOS_PASOS.md)
+
+---
+
+**Descripción sugerida para el About del repositorio (GitHub):**  
+*Framework de automatización E2E con Serenity BDD, Cucumber y Java. POM, datos en YAML, CI en GitHub Actions, reportes Serenity.*
