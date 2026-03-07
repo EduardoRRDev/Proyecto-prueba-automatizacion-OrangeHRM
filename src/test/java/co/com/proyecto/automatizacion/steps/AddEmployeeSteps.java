@@ -4,6 +4,7 @@ import co.com.proyecto.automatizacion.config.Paths;
 import co.com.proyecto.automatizacion.config.TestConfig;
 import co.com.proyecto.automatizacion.models.Employee;
 import co.com.proyecto.automatizacion.pages.pim.AddEmployeePage;
+import co.com.proyecto.automatizacion.util.WaitHelper;
 import net.serenitybdd.annotations.Step;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -37,7 +38,7 @@ public class AddEmployeeSteps {
 
     @Step("guarda el empleado")
     public void saveEmployee() {
-        pause(1500); // Espera a que el formulario procese los campos antes de guardar
+        WaitHelper.pause(1500); // Espera a que el formulario procese los campos antes de guardar
         addEmployeePage.btnSave
             .withTimeoutOf(Duration.ofSeconds(10))
             .waitUntilClickable()
@@ -76,7 +77,7 @@ public class AddEmployeeSteps {
         addEmployeePage.inputLastName.type(employee.getLastName());
 
         if (employee.getEmployeeId() != null && !employee.getEmployeeId().isBlank()) {
-            pause(500);
+            WaitHelper.pause(500);
             addEmployeePage.inputEmployeeId
                 .withTimeoutOf(Duration.ofSeconds(10))
                 .waitUntilVisible()
@@ -113,7 +114,7 @@ public class AddEmployeeSteps {
             "  }" +
             "}";
         addEmployeePage.evaluateJavascript(script);
-        pause(1000);
+        WaitHelper.pause(1000);
 
         // Si el campo username aún no aparece, intentar con el span del switch
         try {
@@ -124,15 +125,7 @@ public class AddEmployeeSteps {
             addEmployeePage.evaluateJavascript(
                 "var s = document.querySelector('span.oxd-switch-input'); if (s) s.click();"
             );
-            pause(1500);
-        }
-    }
-
-    private void pause(int ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
+            WaitHelper.pause(1500);
         }
     }
 }

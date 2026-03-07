@@ -3,6 +3,7 @@ package co.com.proyecto.automatizacion.steps;
 import co.com.proyecto.automatizacion.config.Paths;
 import co.com.proyecto.automatizacion.config.TestConfig;
 import co.com.proyecto.automatizacion.pages.pim.EmployeeListPage;
+import co.com.proyecto.automatizacion.util.WaitHelper;
 import net.serenitybdd.annotations.Step;
 
 import java.time.Duration;
@@ -23,7 +24,7 @@ public class EmployeeListSteps {
         employeeListPage.openAt(TestConfig.getBaseUrl() + Paths.VIEW_EMPLOYEE_LIST);
         waitForPageLoad();
         employeeListPage.expandFilterIfCollapsed();
-        pause(1500); // Dar tiempo a que el panel expandido renderice los inputs
+        WaitHelper.pause(1500); // Dar tiempo a que el panel expandido renderice los inputs
     }
 
     /**
@@ -37,7 +38,7 @@ public class EmployeeListSteps {
             .waitUntilVisible()
             .type(firstName);
 
-        pause(2500); // Tiempo para que el autocomplete cargue opciones del servidor
+        WaitHelper.pause(2500); // Tiempo para que el autocomplete cargue opciones del servidor
 
         employeeListPage.selectAutocompleteOption(firstName);
 
@@ -46,7 +47,7 @@ public class EmployeeListSteps {
             .waitUntilClickable()
             .click();
 
-        pause(2500); // Tiempo para que la tabla cargue resultados
+        WaitHelper.pause(2500); // Tiempo para que la tabla cargue resultados
     }
 
     /**
@@ -66,7 +67,7 @@ public class EmployeeListSteps {
             .withTimeoutOf(Duration.ofSeconds(10))
             .waitUntilClickable()
             .click();
-        pause(800);
+        WaitHelper.pause(800);
         employeeListPage.btnConfirmDelete
             .withTimeoutOf(Duration.ofSeconds(10))
             .waitUntilClickable()
@@ -74,7 +75,7 @@ public class EmployeeListSteps {
     }
 
     private void waitForPageLoad() {
-        pause(2500);
+        WaitHelper.pause(2500);
     }
 
     /** En headless (CI) el viewport pequeño puede dejar el panel de filtros colapsado; 1920x1080 evita eso. */
@@ -86,14 +87,6 @@ public class EmployeeListSteps {
             } catch (Exception ignored) {
                 // Si el driver aún no está listo, continuar
             }
-        }
-    }
-
-    private void pause(int ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
         }
     }
 }

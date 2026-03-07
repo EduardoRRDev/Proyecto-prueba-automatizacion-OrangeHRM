@@ -4,16 +4,13 @@ import co.com.proyecto.automatizacion.config.Paths;
 import co.com.proyecto.automatizacion.config.TestConfig;
 import co.com.proyecto.automatizacion.pages.common.MainPage;
 import co.com.proyecto.automatizacion.pages.login.LoginPage;
+import co.com.proyecto.automatizacion.util.AssertionHelper;
 import net.serenitybdd.annotations.Step;
 import org.junit.Assume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 /**
  * Steps para el flujo de inicio de sesión.
@@ -70,7 +67,7 @@ public class LoginSteps {
             .withTimeoutOf(Duration.ofSeconds(10))
             .waitUntilVisible()
             .getText();
-        assertThat("Login was unsuccessful.", titulo, is(equalTo("Dashboard")));
+        AssertionHelper.assertTextEquals("Login was unsuccessful.", titulo, "Dashboard");
     }
 
     private boolean isChromeUnavailable(Throwable t) {

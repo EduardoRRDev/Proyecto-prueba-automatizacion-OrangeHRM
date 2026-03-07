@@ -70,6 +70,7 @@ El proyecto ya tiene: POM, SOLID, datos en YAML (testdata), reportes Serenity, C
 - **Qué:** Análisis de código (duplicados, cobertura, bugs potenciales). Ya tienes el bloque comentado en el workflow de GitHub Actions.
 - **Cómo:** Descomentar el step de SonarCloud en `.github/workflows/test.yml`, configurar `SONAR_TOKEN` en secrets y, si hace falta, propiedades en `build.gradle`.
 - **Prioridad:** Baja (mejora calidad de código a largo plazo).
+- **Guía paso a paso:** Ver [**docs/SONARCLOUD.md**](SONARCLOUD.md).
 
 ---
 

@@ -32,7 +32,6 @@ public final class TestDataLoader {
         flowsAddRoot = loadYaml(FLOWS_ADD);
     }
 
-    @SuppressWarnings("unchecked")
     public static Employee getEmployee(String caseId) {
         Map<String, Object> datasets = getMap(flowsAddRoot, "datasets");
         if (datasets == null) throw new IllegalStateException("No 'datasets' en " + FLOWS_ADD);
@@ -47,7 +46,6 @@ public final class TestDataLoader {
         return mergeToEmployee(base, override);
     }
 
-    @SuppressWarnings("unchecked")
     private static Map<String, Object> getEmpleadoBlock(String ref) {
         Map<String, Object> emp = getMap(empleadosRoot, "empleados");
         if (emp == null) throw new IllegalStateException("No 'empleados' en " + EMPLEADOS);
@@ -94,6 +92,7 @@ public final class TestDataLoader {
         return v instanceof Map ? (Map<String, Object>) v : null;
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<String, Object> loadYaml(String resource) {
         Yaml yaml = new Yaml();
         try (InputStream is = TestDataLoader.class.getClassLoader().getResourceAsStream(resource)) {
