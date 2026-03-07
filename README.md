@@ -20,15 +20,29 @@ src/test/java/co/com/proyecto/automatizacion/
 │   ├── login/       # LoginPage
 │   ├── pim/         # AddEmployeePage, EmployeeListPage
 │   └── common/      # MainPage (Dashboard)
-├── steps/           # Lógica de interacción reutilizable
+├── steps/           # Lógica de interacción (LoginSteps, AddEmployeeSteps, EmployeeListSteps)
 ├── definitions/     # Step definitions (Cucumber) + Hooks
 ├── models/          # Modelos de datos (Employee)
 ├── data/            # Carga de datos (EmployeeTestData, TestDataLoader) — lee desde testdata/
-├── context/         # Datos en ejecución (ScenarioContext, RuntimeCounter)
-└── runners/         # Test runners (Login, AddEmployee, RerunFailed)
+├── context/         # Datos en ejecución (ScenarioContext)
+├── util/            # Helpers reutilizables (WaitHelper, AssertionHelper)
+└── runners/         # Runners (AddEmployeeRunner, LoginRunner, RerunFailedRunner)
 ```
 
-**Datos de prueba (YAML):** en **`src/test/resources/testdata/`**. No se usa `data/employees.properties` ni carpeta `resources/data`; todo está en **testdata/**.
+**Recursos (test):**
+
+```
+src/test/resources/
+├── features/        # Escenarios Gherkin
+│   ├── add_employee/
+│   └── login/
+├── testdata/        # Datos en YAML (empleados.yml, login.yml, flows/)
+├── env/             # Entornos (dev, qa, prod).properties
+├── serenity.properties
+└── logback-test.xml
+```
+
+**Datos de prueba:** en **`src/test/resources/testdata/`** (YAML). No se usa `data/employees.properties`; todo está en **testdata/**.
 
 ## Estrategia de datos
 
